@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtoreq.CajeroReq;
 import com.example.demo.dtoreq.ClienteReq;
 import com.example.demo.dtoreq.DetallesCompraReq;
+import com.example.demo.dtoreq.FacturaReq;
 import com.example.demo.dtoreq.PagoReq;
 import com.example.demo.dtoreq.VendedorReq;
 import com.example.demo.dtores.CompraRes;
+import com.example.demo.dtores.FacturaRes;
 import com.example.demo.entities.DetallesCompra;
 import com.example.demo.service.FacturaService;
 
@@ -33,6 +35,8 @@ public class FacturaController {
         return ResponseEntity.ok(factura.realizarFactura(cR, dC, pR, vR, cRe, impuestos, uuid));
     }
 
-    
-
+    @PostMapping("/consultar/{id}")
+    public ResponseEntity<FacturaRes> getFactura(@PathVariable String uuid, @RequestBody FacturaReq fr) {
+        return ResponseEntity.ok(factura.getFactura(uuid, fr));
+    }
 }
