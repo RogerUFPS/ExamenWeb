@@ -16,7 +16,7 @@ public class Producto {
     @Column(length = 1000)
     private String descripcion;
     
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10    , scale = 2)
     private Double precio;
     
     @ManyToOne

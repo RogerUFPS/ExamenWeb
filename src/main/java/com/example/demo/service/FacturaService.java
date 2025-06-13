@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,12 +11,18 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dtoreq.CajeroReq;
 import com.example.demo.dtoreq.ClienteReq;
 import com.example.demo.dtoreq.DetallesCompraReq;
+import com.example.demo.dtoreq.FacturaReq;
 import com.example.demo.dtoreq.PagoReq;
 import com.example.demo.dtoreq.VendedorReq;
+import com.example.demo.dtores.CajeroRes;
+import com.example.demo.dtores.ClienteRes;
 import com.example.demo.dtores.CompraRes;
+import com.example.demo.dtores.FacturaRes;
+import com.example.demo.dtores.ProductoRes;
 import com.example.demo.entities.Cajero;
 import com.example.demo.entities.Cliente;
 import com.example.demo.entities.Compra;
+import com.example.demo.entities.DetallesCompra;
 import com.example.demo.entities.Pago;
 import com.example.demo.entities.Producto;
 import com.example.demo.entities.Tienda;
@@ -85,6 +92,9 @@ public class FacturaService {
             if(det.getCantidad() > prod.getCantidad()) throw new RuntimeException("La cantidad a comprar supera el maximo del producto en tienda");
             valorReal+=prod.getPrecio()-(prod.getPrecio()*det.getDescuento());
         }
+
+        valorReal+=valorReal*(impuestos/100);
+
         for(PagoReq pag : p) tipoPago.findByNombre(pag.getTipoPago()).orElseThrow(()-> new RuntimeException("El tipo de pago no esta permitido en la tienda")); 
 
         if(!conf.isPresent()) cl = registrarCliente(c);
@@ -102,6 +112,7 @@ public class FacturaService {
             total += r.getValor();
         }
 
+        if(valorReal != total) throw new RuntimeException("El valor de la factura no coincide con el valor real de pagos"); 
 
         comp.setTotal(total);
         compra.save(comp);
@@ -122,4 +133,42 @@ public class FacturaService {
         return cl;
     }
 
+    public FacturaRes getFactura(String idTienda, FacturaReq fac) {
+        
+        FacturaRes fcn = new FacturaRes();
+
+        Cliente c = cliente.findByDocumento(fac.getClienteDocumento()).orElseThrow(()-> new RuntimeException("El cliente no existe"));
+        Compra co = compra.findById(fac.getIdFactura()).orElseThrow(()-> new RuntimeException("La factura no existe"));
+        List<DetallesCompra> deCo = detalles.findByCompra(co);
+
+        if(deCo.isEmpty()) throw new RuntimeException("La compra no existe");
+
+        CajeroRes cjn = new CajeroRes();
+        cjn.setNombre(co.getCajero().getNombre());
+        cjn.setDocumento(co.getCajero().getDocumento());
+        ClienteRes cln = new ClienteRes();
+        cln.setDocumento(c.getDocumento());
+        cln.setNombre(c.getNombre());
+        cln.setTipoDocumento(c.getTipoDocumento().getNombre());
+
+        List<ProductoRes> prL = new ArrayList<>();
+
+        for(DetallesCompra de : deCo) {
+            ProductoRes tem = new ProductoRes();
+            tem.setCantidad(de.getCantidad());
+            tem.setPrecio(de.getPrecio());
+            tem.setDescuento(de.getDescuento()*de.getPrecio());
+            tem.setReferencia(de.getProducto().getReferencia());
+            Double subtotal = (tem.getCantidad()*tem.getPrecio())-tem.getDescuento();
+            tem.setSubtotal(subtotal);
+            prL.add(tem);
+        }
+        fcn.setProductos(null);
+        fcn.setCliente(cln);
+        fcn.setCajero(cjn);
+        fcn.setImpuestos(co.getTotal()*co.getImpuestos());
+        fcn.setTotal(co.getTotal());
+        fcn.setProductos(prL);
+        return fcn;
+    }
 }
