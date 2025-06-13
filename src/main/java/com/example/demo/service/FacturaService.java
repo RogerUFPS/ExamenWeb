@@ -18,6 +18,7 @@ import com.example.demo.entities.Cliente;
 import com.example.demo.entities.Compra;
 import com.example.demo.entities.Pago;
 import com.example.demo.entities.Producto;
+import com.example.demo.entities.Tienda;
 import com.example.demo.entities.TipoDocumento;
 import com.example.demo.entities.Vendedor;
 import com.example.demo.repositories.CajeroRepository;
@@ -26,6 +27,7 @@ import com.example.demo.repositories.CompraRepository;
 import com.example.demo.repositories.DetallesCompraRepository;
 import com.example.demo.repositories.PagoRepository;
 import com.example.demo.repositories.ProductoRepository;
+import com.example.demo.repositories.TiendaRepository;
 import com.example.demo.repositories.TipoDocumentoRepository;
 import com.example.demo.repositories.TipoPagoRepository;
 import com.example.demo.repositories.VendedorRepository;
@@ -51,6 +53,8 @@ public class FacturaService {
     private ProductoRepository producto;
     @Autowired
     private TipoPagoRepository tipoPago;
+    @Autowired
+    private TiendaRepository tienda;
 
 
     private CompraRes objToDtoCompra(Compra c) {
@@ -61,24 +65,30 @@ public class FacturaService {
         return n;
     }
 
-    public CompraRes realizarFactura(ClienteReq c, List<DetallesCompraReq> d, List<PagoReq> p, VendedorReq v, CajeroReq ca, Double impuestos) {
+    public CompraRes realizarFactura(ClienteReq c, List<DetallesCompraReq> d, List<PagoReq> p, VendedorReq v, CajeroReq ca, Double impuestos, String idTienda) {
         
         Compra comp = new Compra();
 
         Optional<Cliente> conf = cliente.findByDocumento(c.getDocumento()); 
         Cliente cl;
 
-        if(!conf.isPresent()) cl = registrarCliente(c);
-        else cl = conf.get(); 
+        Tienda t = tienda.findByUuid(idTienda).orElseThrow(()-> new RuntimeException("La tienda no existe"));
         Vendedor ve = vendedor.findByDocumento(v.getDocumento()).orElseThrow(()-> new RuntimeException("El vendedor no existe"));
-        Cajero caj = cajero.findByToken(ca.getToken()).orElseThrow(()-> new RuntimeException("El token no corresponde a ningun cajero en la tienda"));
 
+        Cajero caj = cajero.findByToken(ca.getToken()).orElseThrow(()-> new RuntimeException("El token no corresponde a ningun cajero"));
+        if(!caj.getTienda().getNombre().equals(t.getNombre())) new RuntimeException("El cajero no esta asignado a esta tienda");
+
+
+        Double valorReal = 0d;
         for(DetallesCompraReq det : d){
             Producto prod = producto.findByReferencia(det.getReferencia()).orElseThrow(()-> new RuntimeException("La referencia del producto " + det.getReferencia() + ", no existe, por favor revisar los datos"));
             if(det.getCantidad() > prod.getCantidad()) throw new RuntimeException("La cantidad a comprar supera el maximo del producto en tienda");
+            valorReal+=prod.getPrecio()-(prod.getPrecio()*det.getDescuento());
         }
-
         for(PagoReq pag : p) tipoPago.findByNombre(pag.getTipoPago()).orElseThrow(()-> new RuntimeException("El tipo de pago no esta permitido en la tienda")); 
+
+        if(!conf.isPresent()) cl = registrarCliente(c);
+        else cl = conf.get(); 
 
         comp.setCliente(cl);
         comp.setVendedor(ve);
@@ -91,6 +101,8 @@ public class FacturaService {
         for(PagoReq r : p) {
             total += r.getValor();
         }
+
+
         comp.setTotal(total);
         compra.save(comp);
         return objToDtoCompra(comp);
