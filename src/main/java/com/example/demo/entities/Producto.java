@@ -16,8 +16,8 @@ public class Producto {
     @Column(length = 1000)
     private String descripcion;
     
-    @Column(nullable = false, precision = 10    , scale = 2)
-    private Double precio;
+    @Column(nullable = false)
+    private float precio;
     
     @ManyToOne
     @JoinColumn(name = "tipo_producto_id", nullable = false)

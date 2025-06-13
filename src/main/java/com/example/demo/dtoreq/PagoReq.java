@@ -7,6 +7,6 @@ public class PagoReq {
     
     private String tipoPago;
     private String tipoTarjeta;
-    private Double valor;
+    private float valor;
     private int cuotas;
 }

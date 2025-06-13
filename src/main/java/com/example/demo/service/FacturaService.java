@@ -72,7 +72,7 @@ public class FacturaService {
         return n;
     }
 
-    public CompraRes realizarFactura(ClienteReq c, List<DetallesCompraReq> d, List<PagoReq> p, VendedorReq v, CajeroReq ca, Double impuestos, String idTienda) {
+    public CompraRes realizarFactura(ClienteReq c, List<DetallesCompraReq> d, List<PagoReq> p, VendedorReq v, CajeroReq ca, float impuestos, String idTienda) {
         
         Compra comp = new Compra();
 
@@ -86,7 +86,7 @@ public class FacturaService {
         if(!caj.getTienda().getNombre().equals(t.getNombre())) new RuntimeException("El cajero no esta asignado a esta tienda");
 
 
-        Double valorReal = 0d;
+        float valorReal = 0f;
         for(DetallesCompraReq det : d){
             Producto prod = producto.findByReferencia(det.getReferencia()).orElseThrow(()-> new RuntimeException("La referencia del producto " + det.getReferencia() + ", no existe, por favor revisar los datos"));
             if(det.getCantidad() > prod.getCantidad()) throw new RuntimeException("La cantidad a comprar supera el maximo del producto en tienda");
@@ -107,7 +107,7 @@ public class FacturaService {
         comp.setImpuestos(impuestos);
         comp.setFecha(LocalDateTime.now());
         
-        Double total = 0d;
+        float total = 0f;
         for(PagoReq r : p) {
             total += r.getValor();
         }
@@ -159,7 +159,7 @@ public class FacturaService {
             tem.setPrecio(de.getPrecio());
             tem.setDescuento(de.getDescuento()*de.getPrecio());
             tem.setReferencia(de.getProducto().getReferencia());
-            Double subtotal = (tem.getCantidad()*tem.getPrecio())-tem.getDescuento();
+            float subtotal = (tem.getCantidad()*tem.getPrecio())-tem.getDescuento();
             tem.setSubtotal(subtotal);
             prL.add(tem);
         }

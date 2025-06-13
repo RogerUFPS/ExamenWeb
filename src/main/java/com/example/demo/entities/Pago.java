@@ -22,8 +22,8 @@ public class Pago {
     @Column(length = 20)
     private String tarjetaTipo;
     
-    @Column(precision = 10, scale = 2)
-    private Double valor;
+    @Column
+    private float valor;
     
     private Integer cuotas;
 }

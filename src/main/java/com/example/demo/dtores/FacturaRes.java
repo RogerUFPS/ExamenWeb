@@ -7,8 +7,8 @@ import lombok.Data;
 
 @Data
 public class FacturaRes {
-    private Double total;
-    private Double impuestos;
+    private float total;
+    private float impuestos;
     private ClienteRes cliente;
     private List<ProductoRes> productos;
     private CajeroRes cajero;

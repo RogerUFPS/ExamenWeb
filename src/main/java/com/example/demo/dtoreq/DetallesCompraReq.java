@@ -6,5 +6,5 @@ import lombok.Data;
 public class DetallesCompraReq {
     private String referencia;
     private int cantidad;
-    private Double descuento;
+    private float descuento;
 }

@@ -28,11 +28,11 @@ public class Compra {
     @JoinColumn(name = "cajero_id", nullable = false)
     private Cajero cajero;
     
-    @Column(columnDefinition = "numeric(10,2) default 0")
-    private Double total;
+    @Column
+    private float total;
     
-    @Column(columnDefinition = "numeric(5,2) default 0")
-    private Double impuestos;
+    @Column
+    private float impuestos;
     
     @Column(columnDefinition = "timestamp default now()")
     private LocalDateTime fecha;
