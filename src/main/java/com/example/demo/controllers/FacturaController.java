@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtoreq.CajeroReq;
@@ -20,7 +21,6 @@ import com.example.demo.dtoreq.PagoReq;
 import com.example.demo.dtoreq.VendedorReq;
 import com.example.demo.dtores.CompraRes;
 import com.example.demo.dtores.FacturaRes;
-import com.example.demo.entities.DetallesCompra;
 import com.example.demo.service.FacturaService;
 
 @RestController
@@ -32,12 +32,12 @@ public class FacturaController {
 
 
     @PostMapping("/crear/{id}")
-    public ResponseEntity<CompraRes> realizarCompra(@PathVariable String uuid, @RequestBody float impuestos, @RequestBody ClienteReq cliente, @RequestBody List<DetallesCompraReq> productos, @RequestBody List<PagoReq> medios_pago, @RequestBody VendedorReq vendedor, @RequestBody CajeroReq cajero) {
+    public ResponseEntity<CompraRes> realizarCompra(@RequestParam String uuid, @RequestBody float impuestos, @RequestBody ClienteReq cliente, @RequestBody List<DetallesCompraReq> productos, @RequestBody List<PagoReq> medios_pago, @RequestBody VendedorReq vendedor, @RequestBody CajeroReq cajero) {
         return ResponseEntity.ok(factura.realizarFactura(cliente, productos, medios_pago, vendedor, cajero, impuestos, uuid));
     }
 
     @PostMapping("/consultar/{id}")
-    public ResponseEntity<FacturaRes> getFactura(@PathVariable String uuid, @RequestBody FacturaReq fr) {
+    public ResponseEntity<FacturaRes> getFactura(@RequestParam String uuid, @RequestBody FacturaReq fr) {
         return ResponseEntity.ok(factura.getFactura(uuid, fr));
     }
 }
