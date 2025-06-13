@@ -18,6 +18,7 @@ import com.example.demo.dtoreq.ClienteReq;
 import com.example.demo.dtoreq.DetallesCompraReq;
 import com.example.demo.dtoreq.FacturaReq;
 import com.example.demo.dtoreq.PagoReq;
+import com.example.demo.dtoreq.RealizarCompra;
 import com.example.demo.dtoreq.VendedorReq;
 import com.example.demo.dtores.CompraRes;
 import com.example.demo.dtores.FacturaRes;
@@ -32,8 +33,8 @@ public class FacturaController {
 
 
     @PostMapping("/crear/{uuid}")
-    public ResponseEntity<CompraRes> realizarCompra(@PathVariable String uuid, @RequestBody Double impuestos, @RequestBody ClienteReq cliente, @RequestBody List<DetallesCompraReq> productos, @RequestBody List<PagoReq> medios_pago, @RequestBody VendedorReq vendedor, @RequestBody CajeroReq cajero) {
-        return ResponseEntity.ok(factura.realizarFactura(cliente, productos, medios_pago, vendedor, cajero, impuestos, uuid));
+    public ResponseEntity<CompraRes> realizarCompra(@PathVariable String uuid, @RequestBody RealizarCompra rc) {
+        return ResponseEntity.ok(factura.realizarFactura(rc.getCliente(), rc.getProductos(), rc.getMedios_pago(), rc.getVendedor(), rc.getCajero(), rc.getImpuestos(), uuid));
     }
 
     @PostMapping("/consultar/{uuid}")
