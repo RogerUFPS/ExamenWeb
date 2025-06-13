@@ -1,0 +1,12 @@
+package com.example.demo.dtores;
+
+import java.time.LocalDateTime;
+
+import lombok.Data;
+
+@Data
+public class CompraRes {
+    private int idNumero;
+    private Double total;
+    private LocalDateTime fecha;
+}
