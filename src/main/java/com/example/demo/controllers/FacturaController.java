@@ -31,13 +31,13 @@ public class FacturaController {
     private FacturaService factura;
 
 
-    @PostMapping("/crear/{id}")
-    public ResponseEntity<CompraRes> realizarCompra(@RequestParam String uuid, @RequestBody float impuestos, @RequestBody ClienteReq cliente, @RequestBody List<DetallesCompraReq> productos, @RequestBody List<PagoReq> medios_pago, @RequestBody VendedorReq vendedor, @RequestBody CajeroReq cajero) {
+    @PostMapping("/crear/{uuid}")
+    public ResponseEntity<CompraRes> realizarCompra(@PathVariable String uuid, @RequestBody float impuestos, @RequestBody ClienteReq cliente, @RequestBody List<DetallesCompraReq> productos, @RequestBody List<PagoReq> medios_pago, @RequestBody VendedorReq vendedor, @RequestBody CajeroReq cajero) {
         return ResponseEntity.ok(factura.realizarFactura(cliente, productos, medios_pago, vendedor, cajero, impuestos, uuid));
     }
 
-    @PostMapping("/consultar/{id}")
-    public ResponseEntity<FacturaRes> getFactura(@RequestParam String uuid, @RequestBody FacturaReq fr) {
+    @PostMapping("/consultar/{uuid}")
+    public ResponseEntity<FacturaRes> getFactura(@PathVariable String uuid, @RequestBody FacturaReq fr) {
         return ResponseEntity.ok(factura.getFactura(uuid, fr));
     }
 }
