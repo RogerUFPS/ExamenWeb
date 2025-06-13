@@ -23,7 +23,7 @@ public class Pago {
     private String tarjetaTipo;
     
     @Column
-    private float valor;
+    private Double valor;
     
     private Integer cuotas;
 }

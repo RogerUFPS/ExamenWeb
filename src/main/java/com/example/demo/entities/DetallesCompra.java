@@ -23,8 +23,8 @@ public class DetallesCompra {
     private Integer cantidad;
     
     @Column(nullable = false)
-    private float precio;
+    private Double precio;
     
-    @Column(columnDefinition = "numeric(5,2) default 0")
-    private float descuento;
+    @Column
+    private Double descuento;
 }

@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class CompraRes {
     private int idNumero;
-    private float total;
+    private Double total;
     private LocalDateTime fecha;
 }

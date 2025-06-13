@@ -29,10 +29,10 @@ public class Compra {
     private Cajero cajero;
     
     @Column
-    private float total;
+    private Double total;
     
     @Column
-    private float impuestos;
+    private Double impuestos;
     
     @Column(columnDefinition = "timestamp default now()")
     private LocalDateTime fecha;

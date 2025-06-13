@@ -6,7 +6,7 @@ import lombok.Data;
 public class ProductoRes {
     private String referencia;
     private int cantidad;
-    private float precio;
-    private float descuento;
-    private float subtotal;
+    private Double precio;
+    private Double descuento;
+    private Double subtotal;
 }
