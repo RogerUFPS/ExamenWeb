@@ -30,9 +30,10 @@ public class FacturaController {
     @Autowired
     private FacturaService factura;
 
+
     @PostMapping("/crear/{id}")
-    public ResponseEntity<CompraRes> realizarCompra(@PathVariable String uuid, @RequestBody ClienteReq cR, @RequestBody List<DetallesCompraReq> dC, @RequestBody List<PagoReq> pR, @RequestBody VendedorReq vR, @RequestBody CajeroReq cRe, @RequestBody float impuestos) {
-        return ResponseEntity.ok(factura.realizarFactura(cR, dC, pR, vR, cRe, impuestos, uuid));
+    public ResponseEntity<CompraRes> realizarCompra(@PathVariable String uuid, @RequestBody float impuestos, @RequestBody ClienteReq cliente, @RequestBody List<DetallesCompraReq> productos, @RequestBody List<PagoReq> medios_pago, @RequestBody VendedorReq vendedor, @RequestBody CajeroReq cajero) {
+        return ResponseEntity.ok(factura.realizarFactura(cliente, productos, medios_pago, vendedor, cajero, impuestos, uuid));
     }
 
     @PostMapping("/consultar/{id}")
